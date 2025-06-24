@@ -6,3 +6,6 @@ __pycache__/
 
 # Ignora arquivos .pyc
 *.pyc
+
+# Ignora env
+.env
