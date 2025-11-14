@@ -12,13 +12,15 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 import os
 
+print(os.getenv("GEMINI_API_KEY"))
+
 load_dotenv()
 
-url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
-headers = {
-    "Content-Type": "application/json",
-    "x-goog-api-key": os.getenv("GOOGLE_API_KEY"),
-}
+# url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
+# headers = {
+#     "Content-Type": "application/json",
+#     "x-goog-api-key": os.getenv("GOOGLE_API_KEY"),
+# }
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 actions = ActionChains(driver)
@@ -42,12 +44,23 @@ register_button = WebDriverWait(driver, 10).until(
 register_button.click()
 
 subjects = [
-    {"name": "PORTARIA REDEFINE MULTAS DO ESOCIAL E EXIGE NOVA POSTURA DAS EMPRESAS."},
-    {"name": "DESCUBRA OS 11 TIPOS DE CONTRATOS DE TRABALHO PERMITIDOS PELA LEI."},
+    {"name": "SITUAÇÕES QUE COLOCAM O FLUXO DE CAIXA EM PERIGO."},
+    {"name": "O ATIVO INVISÍVEL DA LIDERANÇA: POR QUE A CONFIANÇA É O MAIOR BENEFÍCIO QUE UMA EMPRESA PODE OFERECER."},
+    {"name": "REFORMA TRIBUTÁRIA: TOP 5 DICAS PARA INCLUIR NO CHECKLIST DA EMPRESA."},
+    {"name": "COMPRADOR DO IMÓVEL DEVE PAGAR CONDOMÍNIO MESMO QUE AINDA NÃO TENHA CHAVES."},
+    {"name": "DESCONTO DO DSR: O QUE DIZ A LEI, COMO CALCULAR E INCLUIR NA FOLHA DE PAGAMENTO."},
+    {"name": "CARTÃO, PIX E NOTA FISCAL: TUDO O QUE O FISCO JÁ ESTÁ CRUZANDO E OS CUIDADOS PARA A SUA EMPRESA NÃO CAIR EM MALHA FISCAL."},
+    {"name": "MEI E PREVIDÊNCIA SOCIAL: 5 DÚVIDAS COMUNS DE MICROEMPREENDEDORES INDIVIDUAIS."},
+    {"name": "CONTRIBUIÇÃO ASSISTENCIAL: O QUE DIZ A CLT APÓS A REFORMA."},
+    {"name": "SUSPENSÃO DISCIPLINAR NO TRABALHO INTERMITENTE: QUANDO E COMO APLICAR CORRETAMENTE."},
+    {"name": "GRATIFICAÇÃO POR FUNÇÃO: O QUE SUA EMPRESA PRECISA SABER PARA NÃO TER PROBLEMAS LEGAIS."},
+    {"name": "PRINCIPAIS TERMOS NA GESTÃO DE CUSTOS: UMA ABORDAGEM CONCEITUAL."},
+    {"name": "PESSOAS FÍSICAS E A TRIBUTAÇÃO DAS OPERAÇÕES COM BENS IMÓVEIS – CONFORME A LC 214/2025."},
+    {"name": "CONTABILIDADE E FLUXO DE CAIXA: UMA DUPLA ESSENCIAL PARA O SEU NEGÓCIO."}
 ]
 
 for subject in subjects:
-    textos = create_draft_post(driver, url, headers, subject)
+    textos = create_draft_post(driver, subject)
 
     try:
         post_content = create_post_content(textos)

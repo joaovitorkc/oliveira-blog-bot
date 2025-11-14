@@ -1,32 +1,38 @@
 import ast
-import requests
 import time
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from google import genai
 from src.services.create_prompt_service import create_prompt
+import os
 
-def create_draft_post(driver, url, headers, subject):
-    print("Fazendo rascunho sobre o tema:" + subject["name"]) 
+def create_draft_post(driver, subject):
+    client = genai.Client()
+    print("Fazendo rascunho sobre o tema: " + subject["name"]) 
     driver.get("https://oliveiraassessoriacontab.com.br/wp-admin/post-new.php") 
 
-    data = {
-        "contents": [{
-            "parts": [
-                {
-                    "text": f'{create_prompt(subject["name"])}'
-                }
-            ]
-        }]
-    }
+    response = client.models.generate_content(
+        model="gemini-2.5-flash", contents=f'{create_prompt(subject["name"])}'
+    )
 
-    response = requests.post(url, headers=headers, json=data)
+    # data = {
+    #     "contents": [{
+    #         "parts": [
+    #             {
+    #                 "text": f'{create_prompt(subject["name"])}'
+    #             }
+    #         ]
+    #     }]
+    # }
 
-    print(f"Requisição para o tema {subject['name']} foi concluída com status {response.status_code}")
-    response_data = response.json()
+    # response = requests.post(url, headers=headers, json=data)
 
-    textos_str = response_data['candidates'][0]['content']['parts'][0]['text'].replace("```python", "").replace("```", "").replace("textos = ", "").strip()
+    # print(f"Requisição para o tema {subject['name']} foi concluída com status {response.status_code}")
+    response_data = response.text
+
+    textos_str = response_data.replace("```python", "").replace("```", "").replace("textos = ", "").strip()
 
     try:
         textos = ast.literal_eval(textos_str)
